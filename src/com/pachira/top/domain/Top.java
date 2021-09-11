@@ -78,4 +78,11 @@ public class Top {
 	public void setCommand(String command) {
 		this.command = command;
 	}
+	@Override
+	public String toString() {
+		return  pid + "\t" + user + "\t" + pr + "\t" + ni + "\t" + virt + "\t" + res
+				+ "\t" + shr + "\t" + cpu + "\t" + mem + "\t" + time + "\t" + command;
+	}
+	
+	
 }
