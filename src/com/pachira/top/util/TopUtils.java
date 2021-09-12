@@ -159,8 +159,7 @@ public class TopUtils {
 
 	public static void printTjRes(Map<Integer, TjTop> tjTopMap) {
 		Iterator<Integer> it = tjTopMap.keySet().iterator();
-		System.out.println("\t虚拟内存(VIRT)\t常驻内存(RES)\t共享内存(SHR)\tCPU使用率(%CPU)\t物理内存(%MEM)");
-		System.out.println("\tVIRT\tRES\tSHR\t%CPU\t%MEM\tPID[command])");
+		System.out.println("\tVIRT(虚拟内存)\tRES(常驻内存)\tSHR(共享内存)\t%CPU\t%MEM\tPID[command])");
 		while (it.hasNext()) {
 			Integer pid = it.next();
 			TjTop tjTop = tjTopMap.get(pid);

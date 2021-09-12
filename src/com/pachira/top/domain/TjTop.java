@@ -102,7 +102,6 @@ public class TjTop {
             return "";
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("==============").append(pid).append("[").append(command).append("]===============\n");
         DecimalFormat df = new DecimalFormat("0.###");
         sb.append("平均值\t").append(formatVal(tot_virt / count)).append("\t")
                 .append(formatVal(tot_res / count)).append("\t")
