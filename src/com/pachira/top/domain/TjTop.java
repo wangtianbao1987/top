@@ -1,0 +1,271 @@
+package com.pachira.top.domain;
+
+import java.text.DecimalFormat;
+
+/**
+ * @author 王添宝
+ * @date 2021-09-12 16:49
+ **/
+public class TjTop {
+    private Integer pid;
+    private long tot_virt;
+    private long tot_res;
+    private long tot_shr;
+    private double tot_cpu;
+    private double tot_mem;
+
+    private long min_virt = Long.MAX_VALUE;
+    private long min_res = Long.MAX_VALUE;
+    private long min_shr = Long.MAX_VALUE;
+    private double min_cpu = Double.MAX_VALUE;
+    private double min_mem = Double.MAX_VALUE;
+
+    private long max_virt;
+    private long max_res;
+    private long max_shr;
+    private double max_cpu;
+    private double max_mem;
+
+    private long count;
+    private String command;
+
+    public void addTop(Top top) {
+        long virt = toVal(top.getVirt());
+        long res = toVal(top.getRes());
+        long shr = toVal(top.getShr());
+        double cpu = Double.parseDouble(top.getCpu());
+        double mem = Double.parseDouble(top.getMem());
+
+        count++;
+
+        tot_virt += virt;
+        tot_res += res;
+        tot_shr += shr;
+        tot_cpu += cpu;
+        tot_mem += mem;
+
+        min_virt = Math.min(min_virt, virt);
+        min_res = Math.min(min_res, res);
+        min_shr = Math.min(min_shr, shr);
+        min_cpu = Math.min(min_cpu, cpu);
+        min_mem = Math.min(min_mem, mem);
+
+        max_virt = Math.max(max_virt, virt);
+        max_res = Math.max(max_res, res);
+        max_shr = Math.max(max_shr, shr);
+        max_cpu = Math.max(max_cpu, cpu);
+        max_mem = Math.max(max_mem, mem);
+
+        command = top.getCommand();
+        pid = top.getPid();
+
+    }
+
+    private long toVal(String yz) {
+        yz = yz.toLowerCase();
+        if (yz.endsWith("t")) {
+            return (long)(Double.parseDouble(yz.substring(0, yz.length() - 1)) * 1024L * 1024L * 1024L * 1024L);
+        } else if (yz.endsWith("g")) {
+            return (long)(Double.parseDouble(yz.substring(0, yz.length() - 1)) * 1024L * 1024L * 1024L);
+        } else if (yz.endsWith("m")) {
+            return (long)(Double.parseDouble(yz.substring(0, yz.length() - 1)) * 1024L * 1024L);
+        } else if (yz.endsWith("k")) {
+            return (long)(Double.parseDouble(yz.substring(0, yz.length() - 1)) * 1024L);
+        } else {
+            return (long)Long.parseLong(yz);
+        }
+    }
+
+    private String formatVal(double val) {
+        DecimalFormat df = new DecimalFormat("0.###");
+        if (val / 1024 < 1) {
+            return df.format(val);
+        }
+        val = val / 1024;
+        if (val / 1024 < 1) {
+            return df.format(val) + "KB";
+        }
+        val = val / 1024;
+        if (val / 1024 < 1) {
+            return df.format(val) + "MB";
+        }
+        val = val / 1024;
+        if (val / 1024 < 1) {
+            return df.format(val) + "GB";
+        }
+        val = val / 1024;
+        return df.format(val) + "TB";
+    }
+
+    public String toRes() {
+        if (count == 0) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("==============").append(pid).append("[").append(command).append("]===============\n");
+        DecimalFormat df = new DecimalFormat("0.###");
+        sb.append("平均值\t").append(formatVal(tot_virt / count)).append("\t")
+                .append(formatVal(tot_res / count)).append("\t")
+                .append(formatVal(tot_shr / count)).append("\t")
+                .append(df.format(tot_cpu / count)).append("\t")
+                .append(df.format(tot_mem / count)).append("\t")
+                .append(pid).append("[").append(command).append("]\n");
+        sb.append("最大值\t").append(formatVal(max_virt)).append("\t")
+                .append(formatVal(max_res)).append("\t")
+                .append(formatVal(max_shr)).append("\t")
+                .append(df.format(max_cpu)).append("\t")
+                .append(df.format(max_mem)).append("\t")
+                .append(pid).append("[").append(command).append("]\n");
+        sb.append("最小值\t").append(formatVal(min_virt)).append("\t")
+                .append(formatVal(min_res)).append("\t")
+                .append(formatVal(min_shr)).append("\t")
+                .append(df.format(min_cpu)).append("\t")
+                .append(df.format(min_mem)).append("\t")
+                .append(pid).append("[").append(command).append("]");
+        return sb.toString();
+    }
+
+    public Integer getPid() {
+        return pid;
+    }
+
+    public void setPid(Integer pid) {
+        this.pid = pid;
+    }
+
+    public long getTot_virt() {
+        return tot_virt;
+    }
+
+    public void setTot_virt(long tot_virt) {
+        this.tot_virt = tot_virt;
+    }
+
+    public long getTot_res() {
+        return tot_res;
+    }
+
+    public void setTot_res(long tot_res) {
+        this.tot_res = tot_res;
+    }
+
+    public long getTot_shr() {
+        return tot_shr;
+    }
+
+    public void setTot_shr(long tot_shr) {
+        this.tot_shr = tot_shr;
+    }
+
+    public double getTot_cpu() {
+        return tot_cpu;
+    }
+
+    public void setTot_cpu(double tot_cpu) {
+        this.tot_cpu = tot_cpu;
+    }
+
+    public double getTot_mem() {
+        return tot_mem;
+    }
+
+    public void setTot_mem(double tot_mem) {
+        this.tot_mem = tot_mem;
+    }
+
+    public long getMin_virt() {
+        return min_virt;
+    }
+
+    public void setMin_virt(long min_virt) {
+        this.min_virt = min_virt;
+    }
+
+    public long getMin_res() {
+        return min_res;
+    }
+
+    public void setMin_res(long min_res) {
+        this.min_res = min_res;
+    }
+
+    public long getMin_shr() {
+        return min_shr;
+    }
+
+    public void setMin_shr(long min_shr) {
+        this.min_shr = min_shr;
+    }
+
+    public double getMin_cpu() {
+        return min_cpu;
+    }
+
+    public void setMin_cpu(double min_cpu) {
+        this.min_cpu = min_cpu;
+    }
+
+    public double getMin_mem() {
+        return min_mem;
+    }
+
+    public void setMin_mem(double min_mem) {
+        this.min_mem = min_mem;
+    }
+
+    public long getMax_virt() {
+        return max_virt;
+    }
+
+    public void setMax_virt(long max_virt) {
+        this.max_virt = max_virt;
+    }
+
+    public long getMax_res() {
+        return max_res;
+    }
+
+    public void setMax_res(long max_res) {
+        this.max_res = max_res;
+    }
+
+    public long getMax_shr() {
+        return max_shr;
+    }
+
+    public void setMax_shr(long max_shr) {
+        this.max_shr = max_shr;
+    }
+
+    public double getMax_cpu() {
+        return max_cpu;
+    }
+
+    public void setMax_cpu(double max_cpu) {
+        this.max_cpu = max_cpu;
+    }
+
+    public double getMax_mem() {
+        return max_mem;
+    }
+
+    public void setMax_mem(double max_mem) {
+        this.max_mem = max_mem;
+    }
+
+    public long getCount() {
+        return count;
+    }
+
+    public void setCount(long count) {
+        this.count = count;
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
+    }
+}

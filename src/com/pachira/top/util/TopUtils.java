@@ -1,25 +1,30 @@
 package com.pachira.top.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import com.pachira.top.callback.InputLineFilter;
 import com.pachira.top.callback.TopAddCallback;
+import com.pachira.top.domain.TjTop;
 import com.pachira.top.domain.Top;
+
+import javax.print.attribute.IntegerSyntax;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 public class TopUtils {
 	
 	private static String cmdStr = "top -bn1";
 	
-	public static List<Top> getAllTopMsg(TopAddCallback callback) {
-		List<Top> tops = new ArrayList<Top>();
+	public static List<Top> getAllTopMsg(List<Top> tops, TopAddCallback callback) {
 		Cmd.exec(cmdStr, new InputLineFilter() {
 			@Override
 			public boolean filter(String line) {
 				Top top = strToTop(line);
 				if (top != null) {
-					callback.add(tops, top);
+					if (callback.checkAdd(top)) {
+						tops.add(top);
+					}
 				}
 				return false;
 			}
@@ -27,18 +32,17 @@ public class TopUtils {
 		return tops;
 	}
 	
-	public static List<Top> getTopMsg(List<String> strs, List<String> regexes, TopAddCallback callback) {
+	public static List<Top> getTopMsg(List<Top> tops, List<String> strs, List<String> regexes, TopAddCallback callback) {
 		if (strs == null || strs.isEmpty()) {
 			if (regexes == null || regexes.isEmpty()) {
-				return getAllTopMsg(callback);
+				return getAllTopMsg(tops, callback);
 			} else {
-				return getTopMsgByRegex(regexes, callback);
+				return getTopMsgByRegex(tops, regexes, callback);
 			}
 		} else if (regexes == null || regexes.isEmpty()) {
-			return getTopMsgByStr(strs, callback);
+			return getTopMsgByStr(tops, strs, callback);
 		}
-		
-		List<Top> tops = new ArrayList<Top>();
+
 		Cmd.exec(cmdStr, new InputLineFilter() {
 			@Override
 			public boolean filter(String line) {
@@ -46,8 +50,10 @@ public class TopUtils {
 					if (line.contains(str)) {
 						Top top = strToTop(line);
 						if (top != null) {
-							callback.add(tops, top);
-							return false;
+							if (callback.checkAdd(top)) {
+								tops.add(top);
+								return false;
+							}
 						}
 					}
 				}
@@ -55,8 +61,10 @@ public class TopUtils {
 					if (Pattern.matches(regex, line)) {
 						Top top = strToTop(line);
 						if (top != null) {
-							callback.add(tops, top);
-							return false;
+							if (callback.checkAdd(top)) {
+								tops.add(top);
+								return false;
+							}
 						}
 					}
 				}
@@ -66,8 +74,7 @@ public class TopUtils {
 		return tops;
 	}
 	
-	public static List<Top> getTopMsgByRegex(List<String> regexes, TopAddCallback callback) {
-		List<Top> tops = new ArrayList<Top>();
+	public static List<Top> getTopMsgByRegex(List<Top> tops, List<String> regexes, TopAddCallback callback) {
 		Cmd.exec(cmdStr, new InputLineFilter() {
 			@Override
 			public boolean filter(String line) {
@@ -75,8 +82,10 @@ public class TopUtils {
 					if (Pattern.matches(regex, line)) {
 						Top top = strToTop(line);
 						if (top != null) {
-							callback.add(tops, top);
-							return false;
+							if (callback.checkAdd(top)) {
+								tops.add(top);
+								return false;
+							}
 						}
 					}
 				}
@@ -87,8 +96,7 @@ public class TopUtils {
 	}
 	
 	
-	public static List<Top> getTopMsgByStr(List<String> strs, TopAddCallback callback) {
-		List<Top> tops = new ArrayList<Top>();
+	public static List<Top> getTopMsgByStr(List<Top> tops, List<String> strs, TopAddCallback callback) {
 		Cmd.exec(cmdStr, new InputLineFilter() {
 			@Override
 			public boolean filter(String line) {
@@ -96,8 +104,10 @@ public class TopUtils {
 					if (line.contains(str)) {
 						Top top = strToTop(line);
 						if (top != null) {
-							callback.add(tops, top);
-							return false;
+							if (callback.checkAdd(top)) {
+								tops.add(top);
+								return false;
+							}
 						}
 					}
 				}
@@ -131,6 +141,34 @@ public class TopUtils {
 			return null;
 		}
 	}
+
+	public static Map<Integer, TjTop> getTjRes(List<Top> tops) {
+		Iterator<Top> topIt = tops.iterator();
+		Map<Integer, TjTop> res = new HashMap<Integer, TjTop>();
+		for (Top top : tops) {
+			Integer pid = top.getPid();
+			TjTop tjtop = res.get(pid);
+			if (tjtop == null) {
+				tjtop = new TjTop();
+				res.put(pid, tjtop);
+			}
+			tjtop.addTop(top);
+		}
+		return res;
+	}
+
+	public static void printTjRes(Map<Integer, TjTop> tjTopMap) {
+		Iterator<Integer> it = tjTopMap.keySet().iterator();
+		System.out.println("\t虚拟内存(VIRT)\t常驻内存(RES)\t共享内存(SHR)\tCPU使用率(%CPU)\t物理内存(%MEM)");
+		System.out.println("\tVIRT\tRES\tSHR\t%CPU\t%MEM\tPID[command])");
+		while (it.hasNext()) {
+			Integer pid = it.next();
+			TjTop tjTop = tjTopMap.get(pid);
+			System.out.println(tjTop.toRes());
+		}
+	}
+
+
 	
 	
 }

@@ -1,7 +1,7 @@
-/target
-/.settings
-/.classpath
-/.idea
-/.DS_Store
-*.iml
+/target/
+/.settings/
+/.classpath/
+/.idea/
 /bin/
+/out/
+/META-INF/
