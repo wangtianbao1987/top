@@ -137,7 +137,21 @@ public class TopUtils {
 				top.setMem(items[9]);
 				top.setCommand(items[11]);
 				return top;
-			} else if (items.length == 12) {
+			} else if (items.length == 11) {
+				Top top = new Top();
+				top.setPid(Integer.parseInt(items[0]));
+				top.setUser(items[1]);
+				top.setPr(items[2]);
+				top.setNi(items[3]);
+				top.setVirt(items[4]);
+				top.setRes(items[5]);
+				top.setShr(items[6]);
+				top.setCpu(items[7]);
+				top.setMem(items[8]);
+				top.setTime(items[9]);
+				top.setCommand(items[10]);
+				return top;
+			}  else if (items.length == 12) {
 				Top top = new Top();
 				top.setPid(Integer.parseInt(items[0]));
 				top.setUser(items[1]);
