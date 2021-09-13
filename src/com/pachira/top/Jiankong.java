@@ -25,6 +25,7 @@ public class Jiankong {
 			}
 			File file = new File(fs.get(0));
 			analyOfflineFile(file);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			printTip();

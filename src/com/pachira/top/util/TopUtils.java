@@ -123,7 +123,7 @@ public class TopUtils {
 		try {
 			line = line.trim();
 			// 第一列应为数字
-			if (line.matches("^[0-9].*$")) {
+			if (!line.matches("^[0-9].*$")) {
 				return null;
 			}
 			String[] items = line.split("\\s+");
