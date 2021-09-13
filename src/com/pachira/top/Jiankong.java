@@ -93,7 +93,7 @@ public class Jiankong {
 
 	private static void printTip() {
 		System.out.println("java -jar top.jar <指令> <参数> ...\n"
-				+ "\t\t-f\t解析日志，若传入该参数其他参数无效"
+				+ "\t\t-f\t解析日志，若传入该参数其他参数无效\n"
 				+ "\t\t-t\t每隔多久监控一次(单位：s)\n"
 				+ "\t\t-tt\t监控总时长(单位：s)\n"
 				+ "\t\t-s <str...>\t筛选结果：结果包含那些字符串，可以写多个\n"
