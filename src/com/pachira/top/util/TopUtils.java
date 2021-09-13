@@ -1,16 +1,18 @@
 package com.pachira.top.util;
 
-import com.pachira.top.callback.InputLineFilter;
-import com.pachira.top.callback.TopAddCallback;
-import com.pachira.top.domain.TjTop;
-import com.pachira.top.domain.Top;
-
-import javax.print.attribute.IntegerSyntax;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import com.pachira.top.callback.InputLineFilter;
+import com.pachira.top.callback.TopAddCallback;
+import com.pachira.top.domain.TjTop;
+import com.pachira.top.domain.Top;
 
 public class TopUtils {
 	
@@ -120,30 +122,44 @@ public class TopUtils {
 	public static Top strToTop(String line) {
 		try {
 			line = line.trim();
-			String[] items = line.split("\\s+");
-			if (items.length < 12) {
+			// 第一列应为数字
+			if (line.matches("^[0-9].*$")) {
 				return null;
 			}
-			Top top = new Top();
-			top.setPid(Integer.parseInt(items[0]));
-			top.setUser(items[1]);
-			top.setPr(items[2]);
-			top.setNi(items[3]);
-			top.setVirt(items[4]);
-			top.setRes(items[5]);
-			top.setShr(items[6]);
-			top.setCpu(items[8]);
-			top.setMem(items[9]);
-			top.setTime(items[10]);
-			top.setCommand(items[11]);
-			return top;
+			String[] items = line.split("\\s+");
+			if (items.length == 7) {
+				Top top = new Top();
+				top.setPid(Integer.parseInt(items[0]));
+				top.setVirt(items[4]);
+				top.setRes(items[5]);
+				top.setShr(items[6]);
+				top.setCpu(items[8]);
+				top.setMem(items[9]);
+				top.setCommand(items[11]);
+				return top;
+			} else if (items.length == 12) {
+				Top top = new Top();
+				top.setPid(Integer.parseInt(items[0]));
+				top.setUser(items[1]);
+				top.setPr(items[2]);
+				top.setNi(items[3]);
+				top.setVirt(items[4]);
+				top.setRes(items[5]);
+				top.setShr(items[6]);
+				top.setCpu(items[8]);
+				top.setMem(items[9]);
+				top.setTime(items[10]);
+				top.setCommand(items[11]);
+				return top;
+			} else {
+				return null;
+			}
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
 	public static Map<Integer, TjTop> getTjRes(List<Top> tops) {
-		Iterator<Top> topIt = tops.iterator();
 		Map<Integer, TjTop> res = new HashMap<Integer, TjTop>();
 		for (Top top : tops) {
 			Integer pid = top.getPid();
@@ -164,6 +180,24 @@ public class TopUtils {
 			Integer pid = it.next();
 			TjTop tjTop = tjTopMap.get(pid);
 			System.out.println(tjTop.toRes());
+		}
+	}
+	
+	
+	public static void readFile(File file, InputLineFilter filter) {
+		FileReader fr = null;
+		BufferedReader br = null;
+		try {
+			fr = new FileReader(file);
+			br = new BufferedReader(fr);
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				filter.filter(line);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			SourceUtils.close(br, fr);
 		}
 	}
 
