@@ -8,31 +8,31 @@ import java.text.DecimalFormat;
  **/
 public class TjTop {
     private Integer pid;
-    private long tot_virt;
-    private long tot_res;
-    private long tot_shr;
+    private double tot_virt;
+    private double tot_res;
+    private double tot_shr;
     private double tot_cpu;
     private double tot_mem;
 
-    private long min_virt = Long.MAX_VALUE;
-    private long min_res = Long.MAX_VALUE;
-    private long min_shr = Long.MAX_VALUE;
+    private double min_virt = Double.MAX_VALUE;
+    private double min_res = Double.MAX_VALUE;
+    private double min_shr = Double.MAX_VALUE;
     private double min_cpu = Double.MAX_VALUE;
     private double min_mem = Double.MAX_VALUE;
 
-    private long max_virt;
-    private long max_res;
-    private long max_shr;
+    private double max_virt;
+    private double max_res;
+    private double max_shr;
     private double max_cpu;
     private double max_mem;
 
-    private long count;
+    private double count;
     private String command;
 
     public void addTop(Top top) {
-        long virt = toVal(top.getVirt());
-        long res = toVal(top.getRes());
-        long shr = toVal(top.getShr());
+        double virt = toVal(top.getVirt());
+        double res = toVal(top.getRes());
+        double shr = toVal(top.getShr());
         double cpu = Double.parseDouble(top.getCpu());
         double mem = Double.parseDouble(top.getMem());
 
@@ -61,25 +61,23 @@ public class TjTop {
 
     }
 
-    private long toVal(String yz) {
+    private double toVal(String yz) {
         yz = yz.toLowerCase();
         if (yz.endsWith("t")) {
-            return (long)(Double.parseDouble(yz.substring(0, yz.length() - 1)) * 1024L * 1024L * 1024L * 1024L);
+            return (double)(Double.parseDouble(yz.substring(0, yz.length() - 1)) * 1024L * 1024L * 1024L * 1024L);
         } else if (yz.endsWith("g")) {
-            return (long)(Double.parseDouble(yz.substring(0, yz.length() - 1)) * 1024L * 1024L * 1024L);
+            return (double)(Double.parseDouble(yz.substring(0, yz.length() - 1)) * 1024L * 1024L * 1024L);
         } else if (yz.endsWith("m")) {
-            return (long)(Double.parseDouble(yz.substring(0, yz.length() - 1)) * 1024L * 1024L);
-        } else if (yz.endsWith("k")) {
-            return (long)(Double.parseDouble(yz.substring(0, yz.length() - 1)) * 1024L);
+            return (double)(Double.parseDouble(yz.substring(0, yz.length() - 1)) * 1024L * 1024L);
         } else {
-            return (long)Long.parseLong(yz);
+            return (double)(Double.parseDouble(yz.substring(0, yz.length() - 1)) * 1024L);
         }
     }
 
     private String formatVal(double val) {
         DecimalFormat df = new DecimalFormat("0.###");
-        if (val / 1024 < 1) {
-            return df.format(val);
+        if (val < 1024) {
+        	return val + "byte";
         }
         val = val / 1024;
         if (val / 1024 < 1) {
@@ -132,27 +130,27 @@ public class TjTop {
         this.pid = pid;
     }
 
-    public long getTot_virt() {
+    public double getTot_virt() {
         return tot_virt;
     }
 
-    public void setTot_virt(long tot_virt) {
+    public void setTot_virt(double tot_virt) {
         this.tot_virt = tot_virt;
     }
 
-    public long getTot_res() {
+    public double getTot_res() {
         return tot_res;
     }
 
-    public void setTot_res(long tot_res) {
+    public void setTot_res(double tot_res) {
         this.tot_res = tot_res;
     }
 
-    public long getTot_shr() {
+    public double getTot_shr() {
         return tot_shr;
     }
 
-    public void setTot_shr(long tot_shr) {
+    public void setTot_shr(double tot_shr) {
         this.tot_shr = tot_shr;
     }
 
@@ -172,27 +170,27 @@ public class TjTop {
         this.tot_mem = tot_mem;
     }
 
-    public long getMin_virt() {
+    public double getMin_virt() {
         return min_virt;
     }
 
-    public void setMin_virt(long min_virt) {
+    public void setMin_virt(double min_virt) {
         this.min_virt = min_virt;
     }
 
-    public long getMin_res() {
+    public double getMin_res() {
         return min_res;
     }
 
-    public void setMin_res(long min_res) {
+    public void setMin_res(double min_res) {
         this.min_res = min_res;
     }
 
-    public long getMin_shr() {
+    public double getMin_shr() {
         return min_shr;
     }
 
-    public void setMin_shr(long min_shr) {
+    public void setMin_shr(double min_shr) {
         this.min_shr = min_shr;
     }
 
@@ -212,27 +210,27 @@ public class TjTop {
         this.min_mem = min_mem;
     }
 
-    public long getMax_virt() {
+    public double getMax_virt() {
         return max_virt;
     }
 
-    public void setMax_virt(long max_virt) {
+    public void setMax_virt(double max_virt) {
         this.max_virt = max_virt;
     }
 
-    public long getMax_res() {
+    public double getMax_res() {
         return max_res;
     }
 
-    public void setMax_res(long max_res) {
+    public void setMax_res(double max_res) {
         this.max_res = max_res;
     }
 
-    public long getMax_shr() {
+    public double getMax_shr() {
         return max_shr;
     }
 
-    public void setMax_shr(long max_shr) {
+    public void setMax_shr(double max_shr) {
         this.max_shr = max_shr;
     }
 
@@ -252,11 +250,11 @@ public class TjTop {
         this.max_mem = max_mem;
     }
 
-    public long getCount() {
+    public double getCount() {
         return count;
     }
 
-    public void setCount(long count) {
+    public void setCount(double count) {
         this.count = count;
     }
 
