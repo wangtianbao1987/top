@@ -69,8 +69,10 @@ public class TjTop {
             return (double)(Double.parseDouble(yz.substring(0, yz.length() - 1)) * 1024L * 1024L * 1024L);
         } else if (yz.endsWith("m")) {
             return (double)(Double.parseDouble(yz.substring(0, yz.length() - 1)) * 1024L * 1024L);
-        } else {
+        } else if (yz.endsWith("k")) {
             return (double)(Double.parseDouble(yz.substring(0, yz.length() - 1)) * 1024L);
+        } else {
+        	return (double)(Double.parseDouble(yz.substring(0, yz.length())) * 1024L);
         }
     }
 
