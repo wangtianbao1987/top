@@ -1,13 +1,18 @@
 package com.pachira.top;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.pachira.top.callback.InputLineFilter;
-import com.pachira.top.callback.TopAddCallback;
 import com.pachira.top.domain.TjTop;
 import com.pachira.top.domain.Top;
+import com.pachira.top.runnable.RunCommand;
+import com.pachira.top.util.CommonUtils;
 import com.pachira.top.util.TopUtils;
-
-import java.io.File;
-import java.util.*;
 
 public class Jiankong {
 
@@ -80,16 +85,17 @@ public class Jiankong {
 		System.out.println("PID\tUSER\tPR\tNI\tVIRT\tRES\tSHR\tCPU(%)\tMEM(%)\tTIME\tCOMMAND");
 		long endTime = System.currentTimeMillis() + tt * 1000;
 		List<Top> tops = Collections.synchronizedList(new ArrayList<Top>());
+		
+		RunCommand rc = new RunCommand(tops, strs, regexes);
+		new Thread(rc).start();
+		
 		while (System.currentTimeMillis() <= endTime) {
-			TopUtils.getTopMsg(tops, strs, regexes, new TopAddCallback() {
-				@Override
-				public boolean checkAdd(Top top) {
-					System.out.println(top);
-					return true;
-				}
-			});
+			rc.runComand();
+			CommonUtils.sleep(t * 1000);
 		}
+		rc.end();
 		TopUtils.printTjRes(TopUtils.getTjRes(tops));
+		System.exit(0);
 	}
 
 	private static void printTip() {
